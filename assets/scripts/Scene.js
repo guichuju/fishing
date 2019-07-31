@@ -1,3 +1,5 @@
+const GameData = require('GameData');
+
 cc.Class({
     extends: cc.Component,
 
@@ -27,9 +29,19 @@ cc.Class({
             default: 0,
             visible: false,
         },
+        mController: {
+            default: null,
+            type: cc.Node,
+        }
     },
 
-    // onLoad () {},
+    onLoad () {
+        let manager = cc.director.getCollisionManager();
+        manager.enabled = true;
+        manager.enabledDrawBoundingBox = true;
+        manager.enabledDebugDraw = true;
+        let a = manager;
+    },
 
     start () {
 
@@ -37,8 +49,8 @@ cc.Class({
 
     update (dt) {
         let depth = Math.floor(Math.abs(this.mHook.y) / 100);
-        let data = this.mSceneData.json[this.mIndex];
-        if (depth - this.mDepth > 0) {
+        if (depth - this.mDepth > 0 && this.mSceneData.json.length > this.mIndex) {
+            let data = this.mSceneData.json[this.mIndex];
             let fish = cc.instantiate(this.mPrefab);
             cc.loader.loadRes(data.res, cc.SpriteFrame, function (err, spriteFrame) {
                 if (!err) {
@@ -52,4 +64,11 @@ cc.Class({
         }
         this.mDepth = depth;
     },
+
+    reset() {
+        GameData.instance.depth = 0;
+        GameData.instance.score = 0;
+        this.mFishPool.removeAllChildren(true);
+        this.mController.removeAllChildren(true);
+    }
 });

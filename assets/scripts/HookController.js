@@ -1,3 +1,5 @@
+const GameData = require("GameData");
+
 cc.Class({
     extends: cc.Component,
 
@@ -16,6 +18,10 @@ cc.Class({
             visible: false
         },
         mCanvas: {
+            default: null,
+            type: cc.Node,
+        },
+        mHook: {
             default: null,
             type: cc.Node,
         }
@@ -56,8 +62,23 @@ cc.Class({
         this.mMoveToPos = this.node.parent.convertToNodeSpaceAR(touchLoc);
     },
 
-    onTouchEnd (event) {
+    onTouchEnd(event) {
         this.mIsMoving = false;
+    },
+
+    onCollisionEnter(other, mime) {
+        other.node.color = cc.Color.RED;
+        let pHook = this.mHook.getComponent("Hook");
+        pHook.RegainLine();
+        other.node.stopAllActions();
+        other.node.group = "default";
+        other.node.parent = this.node;
+        other.node.setPosition(cc.v2(0, 0));
+        other.node.runAction(cc.repeatForever(cc.sequence(
+            cc.rotateTo(0.5, -60 * other.node.scaleX),
+            cc.rotateTo(0.5, -30 * other.node.scaleX),
+        )));
+        GameData.instance.score += 10;
     },
 
     // onLoad () {},
