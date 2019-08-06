@@ -44,7 +44,17 @@ cc.Class({
     },
 
     start () {
-
+        if (cc.sys.platform === cc.sys.WECHAT_GAME) {
+            wx.request({
+                url: "https://www.chenyanfeng.cn/token?code=" + res.code,
+                method: "POST",
+                success: function (data) {
+                    if (data.statusCode == 200) {
+                        console.log("request", data);
+                    }
+                }
+            })
+        }
     },
 
     update (dt) {

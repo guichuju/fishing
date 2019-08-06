@@ -13,7 +13,7 @@ const GameData = cc.Class({
     // onLoad () {},
 
     start() {
-
+        
     },
 
     // update (dt) {},
